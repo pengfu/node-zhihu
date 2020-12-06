@@ -1,6 +1,7 @@
 const Koa = require('koa')
 const bodyparser = require('koa-bodyparser')
 const error = require('koa-json-error')
+const parameter = require('koa-parameter')
 const app = new Koa()
 const routing = require('./routes')
 const port = 3000
@@ -12,6 +13,7 @@ app.use(
   })
 )
 app.use(bodyparser())
+app.use(parameter(app))
 routing(app)
 
 app.listen(port, () => console.log(`程序启动在${port}端口`))
