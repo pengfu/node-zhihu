@@ -20,30 +20,37 @@ const auth = async (ctx, next) => {
 //     console.log(1)
 // })
 
+const db = [{ name: '李磊' }]
+
 router.get('/', (ctx) => {
   ctx.body = '这是主页'
 })
 userRouter.get('/', (ctx) => {
-  ctx.body = [{ name: '李磊111' }]
+  // 设置响应头
+  // ctx.set('Allow', 'GET,POST')
+  ctx.body = db
 })
 userRouter.post('/', (ctx) => {
-  ctx.body = [{ name: '李磊' }]
+  db.push(ctx.request.body)
+  ctx.body = ctx.request.body
 })
-userRouter.put('/', (ctx) => {
-  ctx.body = [{ name: '李磊2' }]
+userRouter.put('/:id', (ctx) => {
+  db[ctx.request.params.id * 1] = ctx.request.body
+  ctx.body = ctx.request.body
 })
 userRouter.get('/:id', (ctx) => {
-  ctx.body = `这是用户${ctx.params.id}`
+  //   ctx.body = `这是用户${ctx.params.id}`
+  ctx.body = db[ctx.request.params.id * 1]
 })
 userRouter.delete('/:id', (ctx) => {
+  db.splice(ctx.request.params.id, 1)
   ctx.status = 204
 })
 
 app.use(bodyparser())
 app.use(router.routes())
 app.use(userRouter.routes())
-app.use(router.allowedMethods());
-app.use(userRouter.allowedMethods());
-
+app.use(router.allowedMethods())
+app.use(userRouter.allowedMethods())
 
 app.listen(3000)
