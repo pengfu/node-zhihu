@@ -67,7 +67,7 @@ class UserController {
     const token = jwt.sign({ name: user.name, _id: user._id }, secret, {
       expiresIn: '1d',
     })
-    ctx.body = token
+    ctx.body = { token }
   }
 }
 module.exports = new UserController()
