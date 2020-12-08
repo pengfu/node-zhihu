@@ -1,5 +1,8 @@
 const Koa = require('koa')
-const bodyparser = require('koa-bodyparser')
+// const bodyparser = require('koa-bodyparser')
+const koaBody = require('koa-body')
+const path = require('path')
+
 const error = require('koa-json-error')
 const parameter = require('koa-parameter')
 const mongoose = require('mongoose')
@@ -8,7 +11,9 @@ const routing = require('./routes')
 const port = 3000
 const { connectionStr } = require('./config')
 
-mongoose.connect(connectionStr, { useUnifiedTopology: true } ,() => console.log('mongodb 连接成功了'))
+mongoose.connect(connectionStr, { useUnifiedTopology: true }, () =>
+  console.log('mongodb 连接成功了')
+)
 mongoose.connection.on('error', console.error)
 
 app.use(
@@ -17,7 +22,17 @@ app.use(
       process.env.NODE_ENV === 'production' ? rest : { stack, ...rest },
   })
 )
-app.use(bodyparser())
+// app.use(bodyparser())
+app.use(
+  koaBody({
+    multipart: true, // support file
+    formidable: {
+      uploadDir: path.join(__dirname, '/public/uploads'), //上传文件保存路径
+      keepExtensions: true, //保留文件扩展名
+    },
+  })
+)
+
 app.use(parameter(app))
 routing(app)
 
