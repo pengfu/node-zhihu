@@ -1,6 +1,8 @@
 const Koa = require('koa')
 // const bodyparser = require('koa-bodyparser')
 const koaBody = require('koa-body')
+const koaStatic = require('koa-static')
+
 const path = require('path')
 
 const error = require('koa-json-error')
@@ -15,6 +17,9 @@ mongoose.connect(connectionStr, { useUnifiedTopology: true }, () =>
   console.log('mongodb 连接成功了')
 )
 mongoose.connection.on('error', console.error)
+
+app.use(koaStatic(path.join(__dirname,'public')))
+
 
 app.use(
   error({
